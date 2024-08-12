@@ -1,32 +1,70 @@
-from ultralyticsplus import YOLO, render_result
+import cv2
+from transformers import DetrImageProcessor, DetrForObjectDetection
+import torch
+import time
+import os
 
-# 모델 로드
-model = YOLO('ultralyticsplus/yolov8s')
+# Load the model and processor
+model = DetrForObjectDetection.from_pretrained("facebook/detr-resnet-50")
+processor = DetrImageProcessor.from_pretrained("facebook/detr-resnet-50")
 
-# 모델 파라미터 설정
-model.overrides['conf'] = 0.25  # NMS confidence threshold
-model.overrides['iou'] = 0.45  # NMS IoU threshold
-model.overrides['agnostic_nms'] = False  # NMS class-agnostic
-model.overrides['max_det'] = 1000  # maximum number of detections per image
+# Create a directory for saving detected objects if it doesn't exist
+os.makedirs('detected_objects', exist_ok=True)
 
-# 이미지 설정
-image = 't1_output.jpg'
+# Initialize video capture
+cap = cv2.VideoCapture('video/street.mp4')  # Replace with 0 for default webcam
 
-# 추론 수행
-results = model.predict(image)
+# Track detected objects
+detected_objects = {}
 
-# 탐지 결과 텍스트로 출력
-for result in results:
-    for box in result.boxes:
-        x1, y1, x2, y2 = map(int, box.xyxy[0].tolist())
-        conf = box.conf[0].item()
-        class_id = int(box.cls[0].item())
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+    
+    # Preprocess the image
+    inputs = processor(images=frame, return_tensors="pt")
+    
+    # Perform inference
+    with torch.no_grad():
+        outputs = model(**inputs)
+    
+    # Extract results
+    target_sizes = torch.tensor([frame.shape[:2]])
+    results = processor.post_process_object_detection(outputs, target_sizes=target_sizes, threshold=0.9)[0]
+    
+    # Get current timestamp
+    current_time = time.strftime("%Y-%m-%d_%H-%M-%S")
+    
+    # Draw bounding boxes and labels on the frame
+    for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+        x1, y1, x2, y2 = box
+        class_name = model.config.id2label[label.item()]
         
-        # 클래스 이름과 신뢰도 추출
-        class_name = model.names[class_id] if hasattr(model, 'names') else str(class_id)
-        print(f"Detected object: {class_name}, Confidence: {conf:.2f}")
-        print(f"Bounding box coordinates: ({x1}, {y1}), ({x2}, {y2})")
+        # Convert coordinates to integers
+        x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+        
+        # Draw bounding box
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.putText(frame, f"{class_name} {score:.2f}", (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+        
+        # Check if this object is new
+        object_id = f"{class_name}_{x1}_{y1}_{x2}_{y2}"
+        if object_id not in detected_objects:
+            detected_objects[object_id] = current_time
+            # Save the detected object's image
+            object_img = frame[y1:y2, x1:x2]
+            cv2.imwrite(f"detected_objects/{class_name}_{current_time}.jpg", object_img)
+            print(f"Detected new object: {class_name}, Time: {current_time}")
+    
+    # Display the resulting frame
+    cv2.imshow('Object Detection', frame)
+    
+    # Exit on 'q' key
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
-# 결과 시각화
-render = render_result(model=model, image=image, result=results[0])
-render.show()
+# Release resources
+cap.release()
+cv2.destroyAllWindows()
