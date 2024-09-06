@@ -1,0 +1,24 @@
+/* create */
+.pop_bg {z-index: -1; opacity: 0; transition: opacity 200ms ease-in-out, z-index 200ms ease-in-out;}
+.pop_doc{z-index: -1; opacity: 0; transition: opacity 200ms ease-in-out, z-index 200ms ease-in-out;}
+.pop_bg.active {position: fixed;width: 100%;height: 100%;background-color: black;opacity: 0.3;z-index: 30; }
+.pop_doc.active { position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); max-width: 500px; width: 50%; background-color: white; border-radius: 20px; padding: 1.75rem; z-index: 40; opacity: 1;}
+.pop_tit {font-size: 24px; font-weight: 700; color: var(--main);}
+.pop_item {font-size: 16px; font-weight: 500;}
+.pop_input {width: 100%; height: 40px; border-radius:40px; padding: 0 10px; border: 1px solid var(--main); color: var(--black); transition: border-color 200ms ease-in-out;}
+.pop_input::placeholder {color: var(--placeholder); font-size: 14px;}
+.pop_input:focus {outline: none; border-color: var(--point);}
+.tit_count {display: block; width: 100%; text-align: right; font-size: 12px; font-weight: 400; color: var(--main);}
+.pop_descBox {width: 100%; height: 220px; padding: 5px; border:1px solid var(--main); border-radius:20px; transition: border-color 200ms ease-in-out;}
+.pop_textarea {resize: none; width: 100%; height: 180px;padding: 5px; outline: none; border: none;  border-radius:20px;}
+.show_doc {display: flex; height: 40px; border-radius:10px; }
+.show_doc li {display: flex; justify-content: center; align-items: center; height: 100%; padding:20px; font-size: 16px; color:var(--placeholder); border: 1px solid var(--main); cursor: pointer;}
+.show_doc li:first-child {border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
+.show_doc li:last-child {border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+.show_doc li.active {background: var(--main); color: #ffffff;}
+.choice_btn_list {display: flex; justify-content: space-between; align-items: center; height: 40px; margin-top: 30px; border-radius:40px; }
+.choice_btn_list li {text-align: center;display: flex; justify-content: center; align-items: center; height: 100%; padding:20px; font-size: 16px; color:#BEB8FF; border-radius:40px; border: 1px solid #BEB8FF;cursor: pointer; transition: background-color 200ms ease-in-out;}
+.choice_btn_list li.active {color: #ffffff; background-color: var(--main);}
+.choice_btn_list li:hover {color: #ffffff; background-color: #BEB8FF;}
+.choice_btn_list li:nth-of-type(2):not(.active) {pointer-events: none; }
+.choice_btn_list li:nth-of-type(2).active {pointer-events: auto; color: #ffffff; background-color: var(--point);}
