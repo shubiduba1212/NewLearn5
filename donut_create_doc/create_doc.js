@@ -21,7 +21,7 @@ export default function CreateDoc({ isActive, setIsActive }) {
   };
 
   const handleCancelClick = () => {
-    setIsActive(false); // active 상태를 false로 설정하여 active 클래스를 제거합니다.
+    setIsActive(false); // 팝업의 active 상태를 false로 설정하여 active 클래스를 제거합니다.
   };
 
    // 제목과 설명이 모두 입력된 경우, 다음 버튼에 active 클래스 추가
