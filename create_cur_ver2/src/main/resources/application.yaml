@@ -1,0 +1,23 @@
+#spring.application.name=create_cur_ver2
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://username:password@cluster0.fqfxc.mongodb.net/vectordb?retryWrites=true&w=majority&appName=Cluster0
+      database: vectordb
+  ai:
+    openai:
+      api-key: api key
+
+#vector db 설정 관련된 내용 추가 ㅠㅠ
+#  spring.ai.vectorstore.mongodb.initialize-schema=false
+#  spring.ai.vectorstore.mongodb.path-name=embedding
+#  spring.ai.vectorstore.mongodb.indexName=vector_index
+
+  # openAI ?? ??
+
+#  spring.ai.openai.chat.options.model=gpt-4o
+#  spring.ai.openai.embedding.options.model=text-embedding-3-small
+
+  # Hybrid Search ???
+#  spring.ai.vectorstore.mongodb.weight.vectorscore=1.0
+#  spring.ai.vectorstore.mongodb.weight.textscore=0.5

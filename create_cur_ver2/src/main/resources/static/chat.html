@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .chat-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .message.user {
+            text-align: right;
+        }
+        .message.bot {
+            text-align: left;
+        }
+        input[type="text"] {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chatbot</h1>
+    <div id="chatBox" class="chat-box"></div>
+    <input type="text" id="userMessage" placeholder="Type your message here..." />
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('query');
+
+    const socket = new WebSocket('ws://localhost:8080/ws-chat');
+
+    socket.onopen = function() {
+        displayMessage(`커리큘럼 도넛과 대화를 시작하겠습니다.`, 'bot');
+    };
+
+    socket.onmessage = function(event) {
+        const message = event.data;
+        displayMessage(message, 'bot'); // 챗봇의 응답을 화면에 표시
+    };
+
+    function sendMessage() {
+        const userMessage = document.getElementById('userMessage').value;
+        if (userMessage.trim() === '') return;
+        displayMessage(userMessage, 'user');
+        socket.send(JSON.stringify({ searchQuery, userMessage }));
+        document.getElementById('userMessage').value = '';
+    }
+
+    function displayMessage(message, sender) {
+        const chatBox = document.getElementById('chatBox');
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${sender}`;
+        messageElement.textContent = message;
+        chatBox.appendChild(messageElement);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+</body>
+</html>
