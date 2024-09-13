@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Search Page</h1>
+    <div class="form-group">
+        <label for="query">Search Query:</label>
+        <input type="text" id="query" placeholder="Enter your search term...">
+    </div>
+    <button id="searchBtn">Search</button>
+    <div id="message" class="message"></div>
+</div>
+
+<script>
+    document.getElementById('searchBtn').addEventListener('click', function() {
+        var query = document.getElementById('query').value;
+        var messageDiv = document.getElementById('message');
+
+        // Input validation
+        if (!query.trim()) {
+            messageDiv.textContent = 'Please enter a search term.';
+            messageDiv.className = 'message error';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
+        fetch('http://localhost:8080/api/scrape?query=' + encodeURIComponent(query), {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(data => {
+                messageDiv.textContent = 'Data scraped and stored successfully.';
+                messageDiv.className = 'message success';
+                messageDiv.style.display = 'block';
+
+                // 검색어를 포함한 URL로 chat.html로 리다이렉트
+                setTimeout(function() {
+                    window.location.href = 'chat.html?query=' + encodeURIComponent(query);
+                }, 2000); // 2초 후에 리다이렉트
+            })
+            .catch(error => {
+                messageDiv.textContent = 'There was an error with the request: ' + error.message;
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            });
+    });
+</script>
+</body>
+</html>
