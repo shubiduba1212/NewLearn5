@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 업로드</title>
+</head>
+<body>
+<h1>PDF 파일 업로드</h1>
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="fileInput" name="file" accept="application/pdf"/>
+    <button type="submit">업로드</button>
+</form>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('file', document.getElementById('fileInput').files[0]);
+
+        const response = await fetch('/api/pdf/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.text();
+        alert(result);
+    });
+</script>
+</body>
+</html>

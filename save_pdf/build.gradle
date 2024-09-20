@@ -1,0 +1,62 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.newrun5'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+	set('springAiVersion', "1.0.0-M2")
+}
+
+dependencies {
+	implementation 'ai.djl:api:0.14.0'
+	implementation 'ai.djl.pytorch:pytorch-engine:0.14.0'
+	implementation 'ai.djl.huggingface:transformers:0.14.0'
+	implementation 'ai.djl.tensorflow:tensorflow-engine:0.14.0'
+	implementation 'com.theokanning.openai-gpt3-java:client:0.10.0'
+	// Spring Boot 관련 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	// OpenAI 관련 의존성
+	implementation 'com.theokanning.openai-gpt3-java:client:0.10.0'
+
+	// PDF 처리 관련 의존성
+	implementation 'org.apache.pdfbox:pdfbox:2.0.29'  // 최신 버전으로 업데이트
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
