@@ -1,0 +1,53 @@
+<!-- chat.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 챗봇 페이지</title>
+</head>
+<body>
+<h1>AI 챗봇</h1>
+<div id="chatWindow"></div>
+<input type="text" id="userInput" placeholder="메시지를 입력하세요" />
+<button id="sendButton">전송</button>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+
+    sendButton.addEventListener('click', function() {
+        const message = userInput.value;
+
+        fetch('/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query: `
+                        mutation($message: String!, $count: Int!) {
+                            chat(message: $message, count: $count)
+                        }
+                    `,
+                variables: {
+                    message: message,
+                    count: 5 // 원하는 문제 개수
+                }
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const replies = data.data.chat;
+                replies.forEach(reply => {
+                    const p = document.createElement('p');
+                    p.textContent = reply;
+                    chatWindow.appendChild(p);
+                });
+                userInput.value = '';
+            })
+            .catch(error => {
+                console.error('에러 발생:', error);
+            });
+    });
+</script>
+</body>
+</html>

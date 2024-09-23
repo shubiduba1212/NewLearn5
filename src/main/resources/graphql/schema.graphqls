@@ -1,0 +1,3 @@
+type Mutation {
+    chat(message: String!, count: Int!): [String]
+}

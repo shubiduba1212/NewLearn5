@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: chatbot_exam
+  data:
+    mongodb:
+      uri: mongodb+srv://username:password@cluster0.fqfxc.mongodb.net/vectordb?retryWrites=true&w=majority&appName=Cluster0
+      database: vectordb
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+  playground:
+    enabled: true
+openai:
+  apiKey: api-key
+
+
+
+
