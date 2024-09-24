@@ -32,12 +32,17 @@ public class MongoSearchService
 
     public AggregationResults<Document> vectorSearch(String query)
     {
+//        List<Double> queryVector = embeddingModel.embed(query);
         float[] queryVector = embeddingModel.embed(query);
+        List<Double> queryVectorList = new ArrayList<>();
+        for (float value : queryVector) {
+            queryVectorList.add((double) value);
+        }
 
         org.bson.Document vectorSearchStage = new org.bson.Document("$vectorSearch",
                 new org.bson.Document("index", "vector_index") // 벡터 인덱스 이름
                         .append("path", "embedding")
-                        .append("queryVector", queryVector) // 벡터로 변환된 쿼리
+                        .append("queryVector", queryVectorList) // 벡터로 변환된 쿼리
                         .append("numCandidates", 64) // 후보 문서 수
                         .append("limit", 10)); // 후보 문서 수
 
@@ -111,7 +116,8 @@ public class MongoSearchService
             Map<String, Object> resultMap = combinedResultsMap.getOrDefault(id
                     , new HashMap<>(doc));
             resultMap.put("vectorSearchScore", vectorScore);
-            resultMap.put("score", vectorScore * 1.0); // 초기 score는 vectorScore로 설정
+            resultMap.put("score", vectorScore * vectorScoreWeight);
+            // 초기 score는 vectorScore로 설정
             combinedResultsMap.put(id, resultMap);
         }
 
@@ -125,7 +131,7 @@ public class MongoSearchService
                     , new HashMap<>(doc));
             double currentScore = (double) resultMap.getOrDefault("score", 0.0);
             resultMap.put("searchScore", textScore);
-            resultMap.put("score", currentScore + textScore * 0.5);
+            resultMap.put("score", currentScore + textScore * textScoreWeight);
             // 기존 score에 searchScore를 더함
             combinedResultsMap.put(id, resultMap);
         }

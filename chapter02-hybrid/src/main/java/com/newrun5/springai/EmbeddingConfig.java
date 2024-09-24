@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EmbeddingConfig
 {
-    // application.properties 에서 token을 가져옮
+    // application.properties 에서 token을 가져옴
     @Value("${spring.ai.openai.api-key}")
     private String openAIToken;
 

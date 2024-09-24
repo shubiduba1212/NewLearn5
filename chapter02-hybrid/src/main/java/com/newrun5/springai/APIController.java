@@ -2,7 +2,6 @@ package com.newrun5.springai;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.ai.vectorstore.MongoDBAtlasVectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -29,6 +27,9 @@ public class APIController
 
     @Autowired
     EmbeddingModel embeddingModel;
+
+    @Autowired
+    private MongoSearchServiceBasic mongoSearchService;
 
     @RequestMapping("/insert")
     public Object insert(@RequestBody ArticleRequest request)
@@ -82,7 +83,8 @@ public class APIController
         // Aggregation 실행 및 결과 반환
         AggregationResults<org.bson.Document> results = mongoTemplate.aggregate(
                 aggregation, "documents", org.bson.Document.class);
-        return results.getMappedResults();
+//        return results.getMappedResults();
+        return mongoSearchService.vectorSearch(query);
     }
 
     @RequestMapping("/text-search")

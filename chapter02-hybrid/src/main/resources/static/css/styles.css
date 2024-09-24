@@ -1,0 +1,99 @@
+.input-section
+{
+    position: fixed;
+    bottom: 0;
+
+    right: 0;
+    width: calc(100% - 250px); /* Adjust when sidebar is open */
+    padding: 10px;
+    transition: width 0.4s ease; /* Smooth transition when sidebar opens/closes */
+}
+
+.sidebar-collapse .input-section
+{
+    width: calc(100% - 80px); /* Adjust width when sidebar is collapsed */
+}
+
+
+.input-group
+{
+    margin: 0 auto;
+}
+
+.chat-box
+{
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 20px;
+
+    border-radius: 10px;
+}
+
+.message-box
+{
+    margin-bottom: 10px;
+}
+
+.gpt-message
+{
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 15px 15px 15px 0;
+    width: fit-content;
+    max-width: 80%;
+}
+
+.user-message
+{
+    background-color: #ffffff; /* White background for user message */
+    color: #333; /* Text color for better readability */
+    padding: 10px;
+    border-radius: 15px 15px 0 15px; /* Rounded corners */
+    width: fit-content;
+    max-width: 80%;
+    margin-left: auto; /* Push the user's message to the right */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border: 1px solid #ccc; /* Optional border for a more distinct look */
+}
+
+.nav-item
+{
+    margin-right: 20px;
+}
+
+.navbar-label
+{
+    white-space: nowrap;  /* Prevents text from breaking */
+    width: auto;
+    text-align: right;    /* Aligns the text to the right for consistency */
+}
+
+.input-section
+{
+    padding: 10px;
+}
+
+/* Align labels with dropdowns */
+.navbar-label
+{
+    margin-right: 10px;
+    line-height: 40px;
+}
+
+.custom-btn
+{
+    width: 250px;    /* Equal width for all buttons */
+    padding: 15px 20px;  /* Thicker vertical padding */
+    font-size: 16px;     /* Adjust font size if necessary */
+}
+
+@media (max-width: 768px)
+{
+    /* Ensure buttons resize on smaller screens */
+    .custom-btn
+    {
+        width: 100%;       /* Full-width on mobile */
+        margin-bottom: 10px; /* Space between stacked buttons */
+    }
+}

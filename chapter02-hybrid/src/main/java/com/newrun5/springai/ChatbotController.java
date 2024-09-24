@@ -9,7 +9,7 @@ public class ChatbotController
     @RequestMapping("/chat")
     public String chat()
     {
-        return "chat.html";
+        return "hybrid.html";
     }
 
     @RequestMapping("/input")
